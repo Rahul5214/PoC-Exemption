@@ -1,6 +1,15 @@
 import csv
+import datetime
+import colorama     # pip3 install colorama
 
-date = input("Enter Date (Day Ahead) DDMMYY: ")
+from colorama import Fore,Style,Back
+colorama.init()
+
+currentDate = datetime.datetime.now()
+currentYear = currentDate.strftime("%y")        # Returns "22" for year 2022
+
+print(f"{Fore.YELLOW}Enter DATE and MONTH only (Day Ahead) DDMM: ", end='')
+date = input()
 
 PoC_Status = {
     "Injecting Utility" : "PoC Exemption",
@@ -37,16 +46,20 @@ POC = []
 
 def automate_POC():
     try:
-        with open("IMPSCH" + date + ".csv", "r", newline="") as file:
+        with open("IMPSCH" + date + currentYear + ".csv", "r", newline="") as file:
             reader = csv.reader(file)
 
             allRows = list(reader)         # Entire file is stored in this variable in 2D array form
             fifthrow = allRows[4]          # Contains all the utilities
             sixthrow = allRows[5]          # For checking if state is Telangana or not for "RSUPL_FTG2"
-            #print(sixthrow)
+            
+            if(allRows[12][0] == "PoC Exemption"):
+                print(f"{Fore.GREEN}PoC status already exist in the Excel file")
+                print(f"{Fore.GREEN}Success")
+                input ("Press Enter to close")
+                return
 
             for index, utility in enumerate(fifthrow):              # enumerate is used to get index of utility "RSUPL_FTG2"
-                # print(PoC_Status[utility])                        # for debugging
                 try:
                     if utility == "RSUPL_FTG2":
                         if sixthrow[index] == "Telangana":
@@ -57,26 +70,26 @@ def automate_POC():
                         POC.append(PoC_Status[utility])
                 
                 except KeyError as e:
-                    print (f"Error: PoC Exemption status is not defined for utility, {e}")
-                    POC.append("Not defined")
+                    print (f"\n{Fore.RED}Error: PoC Exemption status is not defined for utility, {e}")
+                    POC.append("NOT DEFINED")
             
-            # print(POC)     # for debugging
-
             allRows.insert(12,POC)      # for inserting "Y" and "N" in 13th row in excel
-            # print(allRows[12])        # for debugging
 
         try:
-            with open("IMPSCH" + date + ".csv", "w", newline="") as file:
+            with open("IMPSCH" + date + currentYear + ".csv", "w", newline="") as file:
                 writer = csv.writer(file)
                 writer.writerows(allRows)
         except PermissionError as e:
-            print (f"Error: Excel file is open. Please close it, {e}")
+            print (f"{Fore.RED}Error: Excel file is open. Please close it before executing python script, {e}")
+            input ("Press Enter to close")
+            return
 
     except FileNotFoundError as e:
-        print (e)
+        print (f"{Fore.RED}{e}")
+        input ("Press Enter to close")
 
     else:
-        print ("success")
+        print (f"{Fore.GREEN}Success")
         input ("Press Enter to close")
 
 
