@@ -40,6 +40,8 @@ PoC_Status = {
     "AcHPPL_BHDL2"	 :"Y",
     "ABCREPL_BHDL2"	 :"Y",
     "MSUPL_BHDL2"	 :"Y",
+    "TPGEL_BKN"      :"N",
+    "KSPPNL_BHDL2"   :"Y",
 }
 
 POC = []
