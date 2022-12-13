@@ -63,7 +63,7 @@ def automate_POC():
 
             for index, utility in enumerate(fifthrow):              # enumerate is used to get index of utility "RSUPL_FTG2"
                 try:
-                    if utility == "RSUPL_FTG2":
+                    if utility == "RSUPL_FTG2" or utility == "DSNTPC_FTG2":
                         if sixthrow[index] == "Telangana":
                             POC.append("Y")
                         else:
